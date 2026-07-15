@@ -3,8 +3,11 @@ import page.LoginPage;
 import page.RegisterPage;
 import page.ForgotPasswordPage;
 import utils.AppConfig;
-import utils.TestData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.time.Duration;
 import io.qameta.allure.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,42 +16,49 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Feature("Вход")
 public class LoginTest extends BaseTest {
 
+    private MainPage mainPage;
+    private WebDriverWait wait;
+
+    @BeforeEach
+    void prepare() {
+        // Открываем главную страницу перед каждым тестом
+        driver.get(AppConfig.BASE_URL);
+        mainPage = new MainPage(driver);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+
     @Test
     @Story("Вход через кнопку «Личный кабинет»")
     @Severity(SeverityLevel.CRITICAL)
     void loginThroughPersonalAccount() {
-        driver.get(AppConfig.BASE_URL);
-        MainPage mainPage = new MainPage(driver);
         mainPage.clickPersonalAccount();
 
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(TestData.TEST_EMAIL, TestData.TEST_PASSWORD);
+        // Берем email и password созданного в BaseTest юзера
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(!currentUrl.contains("login"), " Вход не выполнен. URL: " + currentUrl);
+        // Безопасное ожидание: проверяем, что ушли со страницы авторизации
+        boolean isLoginFinished = wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("login")));
+        assertTrue(isLoginFinished, "Вход не выполнен. Пользователь остался на странице логина.");
     }
 
     @Test
     @Story("Вход через кнопку «Войти в аккаунт» на главной")
     @Severity(SeverityLevel.CRITICAL)
     void loginThroughMainButton() {
-        driver.get(AppConfig.BASE_URL);
-        MainPage mainPage = new MainPage(driver);
         mainPage.clickLoginButton();
 
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(TestData.TEST_EMAIL, TestData.TEST_PASSWORD);
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(!currentUrl.contains("login"), " Вход не выполнен. URL: " + currentUrl);
+        boolean isLoginFinished = wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("login")));
+        assertTrue(isLoginFinished, "Вход не выполнен. Пользователь остался на странице логина.");
     }
 
     @Test
     @Story("Вход через кнопку в форме восстановления пароля")
     @Severity(SeverityLevel.CRITICAL)
     void loginThroughForgotPasswordForm() {
-        driver.get(AppConfig.BASE_URL);
-        MainPage mainPage = new MainPage(driver);
         mainPage.clickLoginButton();
 
         LoginPage loginPage = new LoginPage(driver);
@@ -57,19 +67,20 @@ public class LoginTest extends BaseTest {
         ForgotPasswordPage forgotPage = new ForgotPasswordPage(driver);
         forgotPage.clickLoginLink();
 
-        loginPage.login(TestData.TEST_EMAIL, TestData.TEST_PASSWORD);
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(!currentUrl.contains("login") && !currentUrl.contains("forgot"),
-                " Вход не выполнен. URL: " + currentUrl);
+        // Ждем, пока URL перестанет содержать и "login", и "forgot"
+        boolean isLoginFinished = wait.until(ExpectedConditions.and(
+                ExpectedConditions.not(ExpectedConditions.urlContains("login")),
+                ExpectedConditions.not(ExpectedConditions.urlContains("forgot"))
+        ));
+        assertTrue(isLoginFinished, "Вход через форму восстановления не удался.");
     }
 
     @Test
     @Story("Вход через кнопку в форме регистрации")
     @Severity(SeverityLevel.CRITICAL)
     void loginThroughRegisterForm() {
-        driver.get(AppConfig.BASE_URL);
-        MainPage mainPage = new MainPage(driver);
         mainPage.clickLoginButton();
 
         LoginPage loginPage = new LoginPage(driver);
@@ -78,10 +89,13 @@ public class LoginTest extends BaseTest {
         RegisterPage registerPage = new RegisterPage(driver);
         registerPage.clickLoginLink();
 
-        loginPage.login(TestData.TEST_EMAIL, TestData.TEST_PASSWORD);
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(!currentUrl.contains("login") && !currentUrl.contains("register"),
-                " Вход не выполнен. URL: " + currentUrl);
+        // Ждем, пока URL перестанет содержать и "login", и "register"
+        boolean isLoginFinished = wait.until(ExpectedConditions.and(
+                ExpectedConditions.not(ExpectedConditions.urlContains("login")),
+                ExpectedConditions.not(ExpectedConditions.urlContains("register"))
+        ));
+        assertTrue(isLoginFinished, "Вход через форму регистрации не удался.");
     }
 }

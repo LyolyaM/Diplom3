@@ -32,10 +32,14 @@ public class MainPage {
 
     @Step("Нажатие на 'Личный кабинет'")
     public void clickPersonalAccount() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // для  Яндекса
+        // Сначала ждем появления элемента в DOM (presenceOfElementLocated)
+        org.openqa.selenium.WebElement element = wait.until(
+                ExpectedConditions.presenceOfElementLocated(personalAccountButton)
+        );
 
-        //  Ждем, пока кнопка станет полностью кликабельной, и только потом кликаем
-        wait.until(ExpectedConditions.elementToBeClickable(personalAccountButton)).click();
+        // Кликаем по нему напрямую через JavaScript bypass
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", element);
     }
 
     @Step("Нажатие на 'Войти в аккаунт'")

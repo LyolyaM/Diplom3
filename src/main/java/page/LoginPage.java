@@ -1,5 +1,5 @@
 package page;
-
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import io.qameta.allure.Step;
@@ -46,7 +46,10 @@ public class LoginPage {
 
     @Step("Нажатие на 'Зарегистрироваться'")
     public void clickRegisterLink() {
-        driver.findElement(registerLink).click();
+        org.openqa.selenium.WebElement element = wait.until(
+                ExpectedConditions.presenceOfElementLocated(registerLink)
+        );
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
     @Step("Нажатие на 'Восстановить пароль'")

@@ -42,8 +42,10 @@ public class BrowserFactory {
         options.setBinary("C:/Program Files/Yandex/YandexBrowser/Application/browser.exe");
 
         options.addArguments("--start-maximized");
+        options.addArguments("--window-size=1920,1080");
         options.addArguments("--remote-allow-origins=*");
 
+        // Просто создаем и возвращаем драйвер, не дергая окно вручную
         return new ChromeDriver(options);
     }
 }
