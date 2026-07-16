@@ -16,14 +16,14 @@ public class MainPage {
     private final By loginButton = By.xpath("(//button[contains(text(),'Войти в аккаунт')])[1]");
 
     // локаторы для вкладок конструктора
-    private final By bunsTab = By.xpath("(//span[contains(text(),'Булки')])[1]");
-    private final By saucesTab = By.xpath("(//span[contains(text(),'Соусы')])[1]");
-    private final By fillingsTab = By.xpath("(//span[contains(text(),'Начинки')])[1]");
+    private final By bunsTab = By.xpath("//div[span[text()='Булки']]");
+    private final By saucesTab = By.xpath("//div[span[text()='Соусы']]");
+    private final By fillingsTab = By.xpath("//div[span[text()='Начинки']]");
 
     // локаторы для заголовков разделов (проверка)
-    private final By bunsHeader = By.xpath("(//h2[contains(text(),'Булки')])[1]");
-    private final By saucesHeader = By.xpath("(//h2[contains(text(),'Соусы')])[1]");
-    private final By fillingsHeader = By.xpath("(//h2[contains(text(),'Начинки')])[1]");
+    private final By bunsHeader = By.xpath("//h2[contains(text(),'Булки')]");
+    private final By saucesHeader = By.xpath("//h2[contains(text(),'Соусы')]");
+    private final By fillingsHeader = By.xpath("//h2[contains(text(),'Начинки')]");
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
@@ -56,7 +56,7 @@ public class MainPage {
                 wait.until(ExpectedConditions.visibilityOfElementLocated(bunsTab)));
         //  Кликаем через JavaScript
         js.executeScript("arguments[0].click();", driver.findElement(bunsTab));
-        waitForAnimation();
+
     }
 
     @Step("Нажатие на вкладку «Соусы»")
@@ -65,7 +65,7 @@ public class MainPage {
         js.executeScript("arguments[0].scrollIntoView(true);",
                 wait.until(ExpectedConditions.visibilityOfElementLocated(saucesTab)));
         js.executeScript("arguments[0].click();", driver.findElement(saucesTab));
-        waitForAnimation();
+
     }
 
     @Step("Нажатие на вкладку «Начинки»")
@@ -74,68 +74,57 @@ public class MainPage {
         js.executeScript("arguments[0].scrollIntoView(true);",
                 wait.until(ExpectedConditions.visibilityOfElementLocated(fillingsTab)));
         js.executeScript("arguments[0].click();", driver.findElement(fillingsTab));
-        waitForAnimation();
+
     }
 
     // МЕТОДЫ ДЛЯ СКРОЛЛИНГА
     @Step("Скролл до заголовка «Булки»")
     public void scrollToBunsHeader() {
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});",
+        js.executeScript("arguments[0].scrollIntoView({behavior: 'auto', block: 'start'});",
                 wait.until(ExpectedConditions.visibilityOfElementLocated(bunsHeader)));
-        waitForAnimation();
+
     }
 
     @Step("Скролл до раздела «Соусы»")
     public void scrollToSaucesHeader() {
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});",
+        js.executeScript("arguments[0].scrollIntoView({behavior: 'auto', block: 'start'});",
                 wait.until(ExpectedConditions.visibilityOfElementLocated(saucesHeader)));
-        waitForAnimation();
+
     }
 
     @Step("Скролл до раздела «Начинки»")
     public void scrollToFillingsHeader() {
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});",
+        js.executeScript("arguments[0].scrollIntoView({behavior: 'auto', block: 'start'});",
                 wait.until(ExpectedConditions.visibilityOfElementLocated(fillingsHeader)));
-        waitForAnimation();
+
+    }
+    // МЕТОДЫ ДЛЯ ПРОВЕРКИ АКТИВНОСТИ ВКЛАДОК
+    @Step("Проверка, что вкладка «Булки» активна")
+    public boolean isBunsTabActive() {
+        return isTabActive(bunsTab);
     }
 
-    //  МЕТОДЫ ДЛЯ ПРОВЕРКИ
-    @Step("Проверка, что виден заголовок «Булки»")
-    public boolean isBunsHeaderVisible() {
+    @Step("Проверка, что вкладка «Соусы» активна")
+    public boolean isSaucesTabActive() {
+        return isTabActive(saucesTab);
+    }
+
+    @Step("Проверка, что вкладка «Начинки» активна")
+    public boolean isFillingsTabActive() {
+        return isTabActive(fillingsTab);
+    }
+
+    // Общий приватный метод для проверки наличия класса активности у таба
+    private boolean isTabActive(By tabLocator) {
         try {
-            return wait.until(ExpectedConditions.visibilityOfElementLocated(bunsHeader)).isDisplayed();
+
+            return wait.until(ExpectedConditions.attributeContains(tabLocator, "class", "tab_tab_type_current"));
         } catch (Exception e) {
             return false;
         }
     }
 
-    @Step("Проверка, что виден заголовок «Соусы»")
-    public boolean isSaucesHeaderVisible() {
-        try {
-            return wait.until(ExpectedConditions.visibilityOfElementLocated(saucesHeader)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
     }
-
-    @Step("Проверка, что виден заголовок «Начинки»")
-    public boolean isFillingsHeaderVisible() {
-        try {
-            return wait.until(ExpectedConditions.visibilityOfElementLocated(fillingsHeader)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    //  ВСПОМОГАТЕЛЬНЫЙ МЕТОД
-    private void waitForAnimation() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-}

@@ -11,7 +11,7 @@ public class ForgotPasswordPage {
     private final WebDriverWait wait;
 
     // Локатор для кнопки "Войти" на странице восстановления пароля
-    private final By loginLink = By.xpath("(//a[contains(text(),'Войти')])[1]");
+    private final By loginLink = By.xpath("//a[text()='Войти']");
 
     public ForgotPasswordPage(WebDriver driver) {
         this.driver = driver;

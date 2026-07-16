@@ -12,12 +12,12 @@ public class RegisterPage {
     private final WebDriver driver;
     private final WebDriverWait wait; // Поле для ожидания
 
-    private final By nameField = By.xpath("(//input[@name='name'])[1]");
-    private final By emailField = By.xpath("(//input[@name='name'])[2]");
-    private final By passwordField = By.xpath("(//input[@name='Пароль'])[1]");
-    private final By registerButton = By.xpath("(//button[contains(text(),'Зарегистрироваться')])[1]");
+    private final By nameField = By.xpath("//label[text()='Имя']/following-sibling::input");
+    private final By emailField = By.xpath("//label[text()='Email']/following-sibling::input");
+    private final By passwordField = By.xpath("//input[@type='password']");
+    private final By registerButton = By.xpath("//button[text()='Зарегистрироваться']");
     private final By errorMessage = By.xpath(".//p[@class='input__error text_type_main-default']");
-    private final By loginLink = By.xpath("(//a[contains(text(),'Войти')])[1]");
+    private final By loginLink = By.xpath("//a[text()='Войти']");
     public RegisterPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Инициализируем ожидание
@@ -60,11 +60,6 @@ public class RegisterPage {
         enterPassword(password);
         clickRegisterButton();
 
-        // Ждём пару секунд, чтобы проверить результат
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
+
+           }
 }

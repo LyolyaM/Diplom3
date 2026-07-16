@@ -11,13 +11,13 @@ public class LoginPage {
     private final WebDriver driver;
     private final WebDriverWait wait;
 
-    // Только ОДИН набор локаторов
-    private final By emailField = By.xpath("(//input[@name='name'])[1]");
-    private final By passwordField = By.xpath("(//input[@name='Пароль'])[1]");
-    private final By eyeIcon = By.xpath("//div[@class='input__icon input__icon-action']//*[name()='svg']");
-    private final By loginButton = By.xpath("(//button[contains(text(),'Войти')])[1]");
-    private final By registerLink = By.xpath("(//a[contains(text(),'Зарегистрироваться')])[1]");
-    private final By forgotPasswordLink = By.xpath("(//a[contains(text(),'Восстановить пароль')])[1]");
+    //  набор локаторов
+    private final By emailField = By.xpath("//label[text()='Email']/following-sibling::input");
+    private final By passwordField = By.xpath("//input[@type='password']");
+    private final By eyeIcon = By.xpath("//div[contains(@class, 'input__icon-action')]");
+    private final By loginButton = By.xpath("//button[text()='Войти']");
+    private final By registerLink = By.xpath("//a[text()='Зарегистрироваться']");
+    private final By forgotPasswordLink = By.xpath("//a[text()='Восстановить пароль']");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
@@ -26,35 +26,34 @@ public class LoginPage {
 
     @Step("Ввод email: {email}")
     public void enterEmail(String email) {
-        driver.findElement(emailField).sendKeys(email);
+        wait.until(ExpectedConditions.elementToBeClickable(emailField)).sendKeys(email);
     }
 
     @Step("Ввод пароля")
     public void enterPassword(String password) {
-        driver.findElement(passwordField).sendKeys(password);
+        wait.until(ExpectedConditions.elementToBeClickable(passwordField)).sendKeys(password);
+
     }
 
     @Step("Нажатие на глазик")
     public void clickEyeIcon() {
-        driver.findElement(eyeIcon).click();
+        wait.until(ExpectedConditions.elementToBeClickable(eyeIcon)).click();
     }
 
     @Step("Нажатие кнопки 'Войти'")
     public void clickLoginButton() {
-        driver.findElement(loginButton).click();
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
     }
 
     @Step("Нажатие на 'Зарегистрироваться'")
     public void clickRegisterLink() {
-        org.openqa.selenium.WebElement element = wait.until(
-                ExpectedConditions.presenceOfElementLocated(registerLink)
-        );
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+        wait.until(ExpectedConditions.elementToBeClickable(registerLink)).click();
     }
 
     @Step("Нажатие на 'Восстановить пароль'")
     public void clickForgotPasswordLink() {
-        driver.findElement(forgotPasswordLink).click();
+        wait.until(ExpectedConditions.elementToBeClickable(forgotPasswordLink)).click();
+
     }
 
     //  ОДИН метод для входа
@@ -62,7 +61,7 @@ public class LoginPage {
     public void login(String email, String password) {
         enterEmail(email);
         enterPassword(password);
-        clickEyeIcon();
+
         clickLoginButton();
 
         //  Ждём, что URL изменится

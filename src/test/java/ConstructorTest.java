@@ -25,7 +25,7 @@ public class ConstructorTest extends BaseTest{
         mainPage.clickBunsTab();
 
         // 3. Проверить, что виден заголовок Булки
-        assertTrue(mainPage.isBunsHeaderVisible(), "Заголовок «Булки» не виден");
+        assertTrue(mainPage.isBunsTabActive(), "Вкладка «Булки» не активна после нажатия");
     }
 
     @Test
@@ -39,8 +39,9 @@ public class ConstructorTest extends BaseTest{
         // 1. Нажать на Соусы
         mainPage.clickSaucesTab();
 
-        // 2. Проверить, что виден заголовок Соусы
-        assertTrue(mainPage.isSaucesHeaderVisible(), " Заголовок «Соусы» не виден");
+        // 2. Проверить, что вкладка «Соусы» стала активной
+        assertTrue(mainPage.isSaucesTabActive(), "Вкладка «Соусы» не активна после нажатия");
+
     }
 
     @Test
@@ -54,8 +55,8 @@ public class ConstructorTest extends BaseTest{
         // 1. Нажать на Начинки
         mainPage.clickFillingsTab();
 
-        // 2. Проверить, что виден заголовок Начинки
-        assertTrue(mainPage.isFillingsHeaderVisible(), " Заголовок «Начинки» не виден");
+        // 2. Проверить, что вкладка «Начинки» стала активной
+        assertTrue(mainPage.isFillingsTabActive(), "Вкладка «Начинки» не активна после нажатия");
     }
 
     @Test
@@ -69,8 +70,8 @@ public class ConstructorTest extends BaseTest{
         // Скроллим до заголовка Соусы
         mainPage.scrollToSaucesHeader();
 
-        // Проверяем, что заголовок виден
-        assertTrue(mainPage.isSaucesHeaderVisible(), " Заголовок «Соусы» не виден после скролла");
+        // Проверяем, что вкладка автоматически стала активной при скролле
+        assertTrue(mainPage.isSaucesTabActive(), "Вкладка «Соусы» не стала активной после скролла");
     }
 
     @Test
@@ -84,8 +85,8 @@ public class ConstructorTest extends BaseTest{
         // Скроллим до заголовка Начинки
         mainPage.scrollToFillingsHeader();
 
-        // Проверяем, что заголовок виден
-        assertTrue(mainPage.isFillingsHeaderVisible(), " Заголовок «Начинки» не виден после скролла");
+        // Проверяем, что вкладка автоматически стала активной при скролле
+        assertTrue(mainPage.isFillingsTabActive(), "Вкладка «Начинки» не стала активной после скролла");
     }
 
     @Test
@@ -102,8 +103,8 @@ public class ConstructorTest extends BaseTest{
         // 2. Скроллим обратно к заголовку Булки
         mainPage.scrollToBunsHeader();
 
-        // 3. Проверяем, что заголовок виден
-        assertTrue(mainPage.isBunsHeaderVisible(), " Заголовок «Булки» не виден после скролла");
+        // 3. Проверяем, что вкладка вернула статус активной
+        assertTrue(mainPage.isBunsTabActive(), "Вкладка «Булки» не стала активной после скролла вверх");
     }
 }
 

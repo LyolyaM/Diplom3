@@ -1,6 +1,9 @@
 package utils;
 
 import models.User;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -9,14 +12,11 @@ import java.net.http.HttpResponse;
 public class UserApiClient {
 
     private static final HttpClient client = HttpClient.newHttpClient();
-
+    private static final Gson gson = new Gson();
     // Быстрая регистрация пользователя перед тестом (возвращает accessToken)
     public static String registerUser(User user) {
         try {
-            String jsonBody = String.format(
-                    "{\"email\":\"%s\",\"password\":\"%s\",\"name\":\"%s\"}",
-                    user.getEmail(), user.getPassword(), user.getName()
-            );
+            String jsonBody = gson.toJson(user);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(AppConfig.BASE_URL + "api/auth/register"))
@@ -28,11 +28,9 @@ public class UserApiClient {
 
             if (response.statusCode() == 200) {
                 String body = response.body();
-                int tokenIndex = body.indexOf("accessToken\":\"");
-                if (tokenIndex != -1) {
-                    int start = tokenIndex + 14;
-                    int end = body.indexOf("\"", start);
-                    return body.substring(start, end);
+                JsonObject jsonObject = JsonParser.parseString(body).getAsJsonObject();
+                if (jsonObject.has("accessToken")) {
+                    return jsonObject.get("accessToken").getAsString();
                 }
             }
         } catch (Exception e) {
